@@ -1,0 +1,46 @@
+# NUMPY QUESTIONS
+
+import numpy as np
+A = np.array([1, 2, 3, 4, 5])
+B = np.array([1, 2, 4, 6, 8])
+stacked_vertical = np.vstack((A, B))
+stacked_horizontal = np.hstack((A, B))
+common_elements = np.intersect1d(A, B)
+numbers_in_range = A[(A >= 5) & (A <= 10)]
+
+#Results
+print("Vertically Stacked Array:")
+print(stacked_vertical)
+print("\nHorizontally Stacked Array:")
+print(stacked_horizontal)
+print("\nCommon Elements between A and B:")
+print(common_elements)
+print("\nNumbers in A between 5 and 10:")
+print(numbers_in_range)
+
+#4
+
+import numpy as np
+# Loading the iris dataset
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+iris_2d = np.genfromtxt(url, delimiter=',', dtype='float', usecols=[0, 1, 2, 3])
+filtered_rows = iris_2d[(iris_2d[:, 2] > 1.5) & (iris_2d[:, 0] < 5.0)]
+print(filtered_rows)
+
+# PANDA QUESTIONS
+
+import pandas as pd
+import numpy as np
+df = pd.read_csv('https://raw.githubusercontent.com/selva86/datasets/master/Cars93_miss.csv')
+filtered_rows = df.loc[::20, ['Manufacturer', 'Model', 'Type']]
+print(filtered_rows)
+
+import pandas as pd
+df = pd.read_csv('https://raw.githubusercontent.com/selva86/datasets/master/Cars93_miss.csv')
+df['Min.Price'].fillna(df['Min.Price'].mean(), inplace=True)
+df['Max.Price'].fillna(df['Max.Price'].mean(), inplace=True)
+print(df[['Min.Price', 'Max.Price']].head())
+
+df_random = pd.DataFrame(np.random.randint(10, 40, 60).reshape(-1, 4))
+rows_with_sum_gt_100 = df_random[df_random.sum(axis=1) > 100]
+print(rows_with_sum_gt_100)
