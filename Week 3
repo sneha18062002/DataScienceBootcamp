@@ -1,0 +1,61 @@
+# 1. Filter the data to include only weekdays (Monday to Friday) and
+plot a line graph showing the pedestrian counts for each day of the
+week.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+url = "https://data.cityofnewyork.us/api/views/6fi9-q3ta/rows.csv?accessType=DOWNLOAD"
+df = pd.read_csv(url)
+df['hour_beginning'] = pd.to_datetime(df['hour_beginning'])
+df['DayOfWeek'] = df['hour_beginning'].dt.dayofweek
+weekday_data = df[df['DayOfWeek'] < 5]  # Monday to Friday
+average_pedestrian_counts = weekday_data.groupby('DayOfWeek')['Pedestrians'].mean()
+plt.plot(average_pedestrian_counts)
+plt.title('Average Pedestrian Counts for Each Weekday')
+plt.xlabel('Day of the Week (0=Monday, 4=Friday)')
+plt.ylabel('Average Pedestrian Count')
+plt.show()
+
+# 2. 2. Track pedestrian counts on the Brooklyn Bridge for the year 2019 and analyze how 
+different weather conditions influence pedestrian activity in that year. Sort the pedestrian 
+count data by weather summary to identify any correlations( with a correlation matrix) between 
+weather patterns and pedestrian counts for the selected year.
+
+import pandas as pd
+url = "https://data.cityofnewyork.us/api/views/6fi9-q3ta/rows.csv?accessType=DOWNLOAD"
+df = pd.read_csv(url)
+df['hour_beginning'] = pd.to_datetime(df['hour_beginning'])
+df['Year'] = df['hour_beginning'].dt.year
+df_2019 = df[(df['Year'] == 2019) & (df['location'] == 'Brooklyn Bridge')]
+df_2019_encoded = pd.get_dummies(df_2019, columns=['weather_summary'])
+correlation_matrix = df_2019_encoded.corr()
+pedestrian_weather_corr = correlation_matrix['Pedestrians'].filter(like='weather_summary')
+print(pedestrian_weather_corr)
+
+# 3. Implement a custom function to categorize time of day into morning,
+afternoon, evening, and night, and create a new column in the
+DataFrame to store these categories. Use this new column to analyze
+pedestrian activity patterns throughout the day.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+url = "https://data.cityofnewyork.us/api/views/6fi9-q3ta/rows.csv?accessType=DOWNLOAD"
+df = pd.read_csv(url)
+df['hour_beginning'] = pd.to_datetime(df['hour_beginning'])
+def categorize_time_of_day(hour):
+    if 6 <= hour < 12:
+        return 'Morning'
+    elif 12 <= hour < 17:
+        return 'Afternoon'
+    elif 17 <= hour < 21:
+        return 'Evening'
+    else:
+        return 'Night'
+df['Hour'] = df['hour_beginning'].dt.hour
+df['TimeOfDay'] = df['Hour'].apply(categorize_time_of_day)
+time_of_day_counts = df.groupby('TimeOfDay')['Pedestrians'].mean()
+time_of_day_counts.plot(kind='bar', color='skyblue')
+plt.title('Average Pedestrian Counts by Time of Day')
+plt.xlabel('Time of Day')
+plt.ylabel('Average Pedestrian Count')
+plt.show()
